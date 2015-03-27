@@ -22,7 +22,6 @@ private:
 	string moduleName;
 	map<string, int> nodeIndex;
 	map<string, Edge> edges;
-	void bfs();
 public:
 	friend class Node;
 	friend class Edge;

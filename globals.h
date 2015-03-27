@@ -17,6 +17,4 @@
 #define CONST_ONE		-41
 #define UNKNOWN_INDEX	-42
 
-#define DEBUG_MODE
-
 #endif

@@ -118,52 +118,6 @@ void Circuit::insertNewNode(const string& nodeName, const string& nodeType, cons
 	nodes[nodes.size() - 1].assignTask(nodeType, portDescription);
 }
 
-
-void Circuit::bfs()
-{
-
-	//for each (unsigned int index in outputNodes)
-    for(int index=0; index<outputNodes.size(); index++)
-	{
-#ifdef DEBUG_MODE
-		map< int, vector<int> > levels;
-		int c = 0;
-#endif
-		vector<int> level(connections.size(),-1);
-		level[index] = 0;
-#ifdef DEBUG_MODE
-		levels[0].push_back(index);
-#endif
-		queue<int> Q;
-		Q.push(index);
-		while (!Q.empty()){
-			int e = Q.front();
-			Q.pop();
-			for (int i = 0; i < connections[e].size(); i++)
-				if (connections[e][i].isConnectedForward() && level[i] == -1){
-					Q.push(i);
-					level[i] = level[e]+1;
-#ifdef DEBUG_MODE
-					levels[level[i]].push_back(i);
-					if (level[i]>c) c = level[i];
-#endif
-				}
-		}
-#ifdef DEBUG_MODE
-		for (int i = 0; i <= c; i++){
-			cout << "level " << i << " : ";
-			for (int j = 0; j < levels[i].size(); j++){
-				cout << nodes[levels[i][j]].name << " ";
-                nodes[levels[i][j]].level = i;
-			}
-			cout << endl;
-		}
-		cout << "-\n";
-#endif
-	}
-
-}
-
 vector<Connection>& Circuit::operator[](size_t index)
 {
 	return connections[index];
