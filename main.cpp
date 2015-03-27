@@ -2,7 +2,43 @@
 #include "globals.h"
 
 using namespace std;
+
+bool calculateValue(int currentNodeIndex);
+bool calculateGate(string nodeType, vector<bool> inputs);
+bool calculateOr(vector<bool> inputs);
+bool calculateBuf(vector<bool> inputs);
+bool calculateInv(vector<bool> inputs);
+bool calculateNand(vector<bool> inputs);
+bool calculateXnor(vector<bool> inputs);
+bool calculateNor(vector<bool> inputs);
+bool calculateXor(vector<bool> inputs);
+bool calculateAnd(vector<bool> inputs);
+
 Circuit circuit;
+
+int main()
+{
+	circuit.parseFile("code1.txt");
+	
+	circuit.node("ci").setValue(1);
+	circuit.node("x[0]").setValue(1);
+	circuit.node("x[1]").setValue(0);
+	circuit.node("y[0]").setValue(1);
+	circuit.node("y[1]").setValue(1);
+
+
+	for (int i = 0; i < circuit.getNodesCount(); i++)
+	{
+		if (circuit.node(i).isOutputPort())
+		{
+			bool result = calculateValue(i);
+			cout << circuit.node(i).getName() << ": " << result << endl;
+		}
+	}
+    
+	system("pause");
+	return 0;
+}
 
 bool calculateOr(vector<bool> inputs)
 {
@@ -30,7 +66,6 @@ bool calculateXor(vector<bool> inputs)
 
 	return result;
 }
-
 bool calculateNor(vector<bool> inputs)
 {
 	return !calculateOr(inputs);
@@ -134,28 +169,4 @@ bool calculateValue(int currentNodeIndex)
 
 	circuit.node(currentNodeIndex).setValue(result);
 	return result;
-}
-
-int main()
-{
-	circuit.parseFile("code1.txt");
-	
-	circuit.node("ci").setValue(1);
-	circuit.node("x[0]").setValue(0);
-	circuit.node("x[1]").setValue(1);
-	circuit.node("y[0]").setValue(1);
-	circuit.node("y[1]").setValue(1);
-
-
-	for (int i = 0; i < circuit.getNodesCount(); i++)
-	{
-		if (circuit.node(i).isOutputPort())
-		{
-			bool result = calculateValue(i);
-			cout << circuit.node(i).getName() << ": " << result << endl;
-		}
-	}
-    
-	system("pause");
-	return 0;
 }
