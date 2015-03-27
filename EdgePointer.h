@@ -3,7 +3,6 @@
 #include "Edge.h"
 using namespace std;
 
-//class Edge;
 class EdgePointer
 {
 public:

@@ -3,28 +3,16 @@
 
 Node::Node()
 {
-	
+	resultValue = 0;
+	valueSet = false;
 }
 
 Node::Node(string name, Circuit* circuit)
 {
 	this->name = name;
 	this->circuit = circuit;
-	/*
-	runFunction[0] = &Node::runInput;
-	runFunction[1] = &Node::runOutput;
-	runFunction[2] = &Node::runInout;
-	runFunction[3] = &Node::runAnd;
-	runFunction[4] = &Node::runOr;
-	runFunction[5] = &Node::runNot;
-	runFunction[6] = &Node::runNand;
-	runFunction[7] = &Node::runNor;
-	runFunction[8] = &Node::runXor;
-	runFunction[9] = &Node::runXnor;
-	runFunction[10] = &Node::runDFlipflop;
-	runFunction[11] = &Node::runSRFlipflop;
-	runFunction[12] = &Node::runBuffer;
-	*/
+	resultValue = 0;
+	valueSet = false;
 }
 
 void Node::setNodeType(string nodeType)
@@ -65,78 +53,40 @@ void Node::assignTask(const string& typeOfNode, const string& portsDescription)
 	}
 }
 
-/*
-
-void Node::runInput(const string& typeOfNode, const string& portsDescription)
+std::string Node::getName() const
 {
-
+	return name;
 }
 
-void Node::runOutput(const string& typeOfNode, const string& portsDescription)
+std::string Node::getType() const
 {
-
-}
-
-void Node::runInout(const string& typeOfNode, const string& portsDescription)
-{
-
-}
-
-void Node::runAnd(const string& typeOfNode, const string& portsDescription)
-{
-
-}
-
-void Node::runOr(const string& typeOfNode, const string& portsDescription)
-{
-
-}
-
-void Node::runNot(const string& typeOfNode, const string& portsDescription)
-{
-
-}
-
-void Node::runNand(const string& typeOfNode, const string& portsDescription)
-{
-
-}
-
-void Node::runNor(const string& typeOfNode, const string& portsDescription)
-{
-
-}
-
-void Node::runXor(const string& typeOfNode, const string& portsDescription)
-{
-
-}
-
-void Node::runXnor(const string& typeOfNode, const string& portsDescription)
-{
-
-}
-
-void Node::runDFlipflop(const string& typeOfNode, const string& portsDescription)
-{
-
-}
-
-void Node::runSRFlipflop(const string& typeOfNode, const string& portsDescription)
-{
-
-}
-
-void Node::runBuffer(const string& typeOfNode, const string& portsDescription)
-{
-
+	return type;
 }
 
 
-regex patterns[] =	{	regex("\\.[A-Z]+\\((.+)\\),[^]+\\.[A-Z]+\\((.+)\\)"),																	// Two variables
-regex("\\.[A-Z]+\\((.+)\\),\\.[A-Z]+\\((.+)\\),[^]+\\.[A-Z]+\\((.+)\\)"),												// Three variables
-regex("\\.[A-Z]+\\((.+)\\),\\.[A-Z]+\\((.+)\\),\\.[A-Z]+\\((.+)\\),[^]+\\.[A-Z]+\\((.+)\\)"),							// Four variables
-regex("\\.[A-Z]+\\((.+)\\),\\.[A-Z]+\\((.+)\\),\\.[A-Z]+\\((.+)\\),\\.[A-Z]+\\((.+)\\),[^]+\\.[A-Z]+\\((.+)\\)")		// Five variables
-};
+bool Node::isInputPort() const
+{
+	return (type == "INPUT_PORT");
+}
 
-*/
+bool Node::isOutputPort() const
+{
+	return (type == "OUTPUT_PORT");
+}
+
+bool Node::getValue() const
+{
+	return resultValue;
+}
+
+void Node::setValue(bool resultValue)
+{
+	this->resultValue = resultValue;
+	valueSet = true;
+}
+
+bool Node::isValueSet() const
+{
+	return valueSet;
+}
+

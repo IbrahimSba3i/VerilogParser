@@ -10,10 +10,10 @@ const Edge& Connection::operator*() const{	return it->operator*();}
 
 const Edge* Connection::operator->() const{	return it->operator->();}
 
-Connection::operator int(){	return value;}
+Connection::operator bool(){	return (value==1);}
 
-bool Connection::isForward() const{	return (value == 1);}
+bool Connection::isConnectedForward() const{	return (value == 1);}
 
-bool Connection::isBackward() const{ return (value == -1);}
+bool Connection::isConnectedBackward() const{ return (value == -1);}
 
 bool Connection::isConnected() const{ return (value == 0);}

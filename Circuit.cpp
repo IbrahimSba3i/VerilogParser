@@ -1,9 +1,9 @@
 #include "Circuit.h"
 #include "EdgePointer.h"
 
-Circuit::Circuit(string fileName)
+Circuit::Circuit()
 {
-	parseFile(fileName);
+	
 }
 
 bool Circuit::verifyFile(const string& fileName)
@@ -140,7 +140,7 @@ void Circuit::bfs()
 			int e = Q.front();
 			Q.pop();
 			for (int i = 0; i < connections[e].size(); i++)
-				if (connections[e][i].isForward() && level[i] == -1){
+				if (connections[e][i].isConnectedForward() && level[i] == -1){
 					Q.push(i);
 					level[i] = level[e]+1;
 #ifdef DEBUG_MODE
@@ -162,4 +162,29 @@ void Circuit::bfs()
 #endif
 	}
 
+}
+
+vector<Connection>& Circuit::operator[](size_t index)
+{
+	return connections[index];
+}
+
+std::string Circuit::getModuleName() const
+{
+	return moduleName;
+}
+
+Node& Circuit::node(size_t index)
+{
+	return nodes[index];
+}
+
+Node& Circuit::node(string nodeName)
+{
+	return nodes[nodeIndex[nodeName]];
+}
+
+size_t Circuit::getNodesCount() const
+{
+	return nodes.size();
 }
