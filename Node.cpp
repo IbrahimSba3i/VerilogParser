@@ -90,3 +90,37 @@ bool Node::isValueSet() const
 	return valueSet;
 }
 
+Node& Node::inputNode(size_t index)
+{
+	if (index >= getInputsCount()) throw std::out_of_range("Node index out of range");
+	return circuit->node(inputs[index]->getSource());
+}
+
+Node& Node::outputNode(size_t index)
+{
+	size_t count = 0;
+	for (int i = 0; i < outputs.size(); i++)
+	{
+		if (count + outputs[i]->nDestinations() > index)
+		{
+			return circuit->node(outputs[i]->getDestination(index - count));
+		}
+		count += outputs[i]->nDestinations();
+	}
+	throw std::out_of_range("Node index out of range");
+	return Node();
+}
+
+size_t Node::getInputsCount()
+{
+	return inputs.size();
+}
+
+size_t Node::getOutputsCount()
+{
+	size_t s = 0;
+	for (int i = 0; i < outputs.size(); i++)
+		s += outputs[i]->nDestinations();
+	return s;
+}
+

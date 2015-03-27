@@ -31,18 +31,20 @@ public:
 	
 	vector<string> getInputPorts() const;				// Returns a vector containing the names of the input ports
 	vector<string> getOutputPorts() const;				// Returns a vector containing the names of the output ports
-
-	vector<int> getInputsIndices() const;				// Returns a vector containing the indices of the input ports in the adjacency matrix
-	vector<int> getOutputsIndices() const;				// Returns a vector containing the indices of the output ports in the adjacency matrix
 	
 	string getModuleName() const;						// Returns the Verilog module name
-	size_t getNodeIndex(const string& nodeName) const;	// Returns the index of a node
 	
 	vector<Connection>& operator[](size_t index);	
 
 	Node& node(size_t index);
-	Node& node(string name);
+	Node& node(const string& name);
 	size_t getNodesCount() const;
+	size_t getNodeIndex(const string& nodeName) const;	// Returns the index of a node
 
+	Node& outputNode(size_t index);
+	size_t getOutputNodesCount() const;
+
+	Node& inputNode(size_t index);
+	size_t getInputNodesCount() const;
 };
 

@@ -42,5 +42,11 @@ public:
 	bool getValue() const;
 	void setValue(bool resultValue);
 	bool isValueSet() const;
+
+	Node& inputNode(size_t index);
+	Node& outputNode(size_t index);
+
+	size_t getInputsCount();
+	size_t getOutputsCount();
 };
 

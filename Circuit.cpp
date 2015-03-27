@@ -133,7 +133,7 @@ Node& Circuit::node(size_t index)
 	return nodes[index];
 }
 
-Node& Circuit::node(string nodeName)
+Node& Circuit::node(const string& nodeName)
 {
 	return nodes[nodeIndex[nodeName]];
 }
@@ -141,4 +141,24 @@ Node& Circuit::node(string nodeName)
 size_t Circuit::getNodesCount() const
 {
 	return nodes.size();
+}
+
+size_t Circuit::getInputNodesCount() const
+{
+	return inputNodes.size();
+}
+
+Node& Circuit::inputNode(size_t index)
+{
+	return node(inputNodes[index]);
+}
+
+size_t Circuit::getOutputNodesCount() const
+{
+	return outputNodes.size();
+}
+
+Node& Circuit::outputNode(size_t index)
+{
+	return node(outputNodes[index]);
 }

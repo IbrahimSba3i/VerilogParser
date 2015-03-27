@@ -4,15 +4,16 @@
 using namespace std;
 
 bool calculateValue(int currentNodeIndex);
-bool calculateGate(string nodeType, vector<bool> inputs);
-bool calculateOr(vector<bool> inputs);
-bool calculateBuf(vector<bool> inputs);
-bool calculateInv(vector<bool> inputs);
-bool calculateNand(vector<bool> inputs);
-bool calculateXnor(vector<bool> inputs);
-bool calculateNor(vector<bool> inputs);
-bool calculateXor(vector<bool> inputs);
-bool calculateAnd(vector<bool> inputs);
+bool calculateNodeValue(Node& n);
+bool simulateGate(string nodeType, const vector<bool>& inputs);
+bool or(const vector<bool>& inputs);
+bool buf(const vector<bool>& inputs);
+bool inv(const vector<bool>& inputs);
+bool nand(const vector<bool>& inputs);
+bool xnor(const vector<bool>& inputs);
+bool nor(const vector<bool>& inputs);
+bool xor(const vector<bool>& inputs);
+bool and(const vector<bool>& inputs);
 
 Circuit circuit;
 
@@ -27,6 +28,7 @@ int main()
 	circuit.node("y[1]").setValue(1);
 
 
+	// Using the adjacency matrix to traverse the circuit
 	for (int i = 0; i < circuit.getNodesCount(); i++)
 	{
 		if (circuit.node(i).isOutputPort())
@@ -36,11 +38,17 @@ int main()
 		}
 	}
     
+	// Using the nodes to traverse the circuit
+	for (int i = 0; i < circuit.getOutputNodesCount(); i++)
+	{
+		bool result = calculateNodeValue(circuit.outputNode(i));
+		cout << circuit.outputNode(i).getName() << ": " << result << endl;
+	}
 	system("pause");
 	return 0;
 }
 
-bool calculateOr(vector<bool> inputs)
+bool or(const vector<bool>& inputs)
 {
 	bool result = inputs[0];
 	for (int i = 1; i < inputs.size(); i++)
@@ -49,7 +57,7 @@ bool calculateOr(vector<bool> inputs)
 	return result;
 }
 
-bool calculateAnd(vector<bool> inputs)
+bool and(const vector<bool>& inputs)
 {
 	bool result = inputs[0];
 	for (int i = 1; i < inputs.size(); i++)
@@ -58,7 +66,7 @@ bool calculateAnd(vector<bool> inputs)
 	return result;
 }
 
-bool calculateXor(vector<bool> inputs)
+bool xor(const vector<bool>& inputs)
 {
 	bool result = inputs[0];
 	for (int i = 1; i < inputs.size(); i++)
@@ -66,65 +74,65 @@ bool calculateXor(vector<bool> inputs)
 
 	return result;
 }
-bool calculateNor(vector<bool> inputs)
+bool nor(const vector<bool>& inputs)
 {
-	return !calculateOr(inputs);
+	return !or(inputs);
 }
 
-bool calculateXnor(vector<bool> inputs)
+bool xnor(const vector<bool>& inputs)
 {
-	return !calculateXor(inputs);
+	return !xor(inputs);
 }
 
-bool calculateNand(vector<bool> inputs)
+bool nand(const vector<bool>& inputs)
 {
-	return !calculateAnd(inputs);
+	return !and(inputs);
 }
 
-bool calculateInv(vector<bool> inputs)
+bool inv(const vector<bool>& inputs)
 {
 	return !inputs[0];
 }
 
-bool calculateBuf(vector<bool> inputs)
+bool buf(const vector<bool>& inputs)
 {
 	return inputs[0];
 }
 
-bool calculateGate(string nodeType, vector<bool> inputs)
+bool simulateGate(string nodeType, const vector<bool>& inputs)
 {
 	bool result = false;
 	if (nodeType.substr(0, 2) == "OR")
 	{
-		result = calculateOr(inputs);
+		result = or(inputs);
 	}
 	else if (nodeType.substr(0, 3) == "AND")
 	{
-		result = calculateAnd(inputs);
+		result = and(inputs);
 	}
 	else if (nodeType.substr(0, 3) == "XOR")
 	{
-		result = calculateXor(inputs);
+		result = xor(inputs);
 	}
 	else if (nodeType.substr(0, 3) == "NOR")
 	{
-		result = calculateNor(inputs);
+		result = nor(inputs);
 	}
 	else if (nodeType.substr(0, 4) == "NAND")
 	{
-		result = calculateNand(inputs);
+		result = nand(inputs);
 	}
 	else if (nodeType.substr(0, 4) == "XNOR")
 	{
-		result = calculateXnor(inputs);
+		result = xnor(inputs);
 	}
 	else if (nodeType.substr(0, 3) == "INV")
 	{
-		result = calculateInv(inputs);
+		result = inv(inputs);
 	}
 	else if (nodeType.substr(0, 3) == "BUF")
 	{
-		result = calculateBuf(inputs);
+		result = buf(inputs);
 	}
 	else
 	{
@@ -164,9 +172,36 @@ bool calculateValue(int currentNodeIndex)
 		}
 
 		string nodeType = circuit.node(currentNodeIndex).getType();
-		result = calculateGate(nodeType, inputs);
+		result = simulateGate(nodeType, inputs);
 	}
 
 	circuit.node(currentNodeIndex).setValue(result);
+	return result;
+}
+
+bool calculateNodeValue(Node& n)
+{
+	bool result = false;
+
+	if (n.isValueSet())
+	{
+		return n.getValue();
+	}
+
+	else if (n.isOutputPort())
+	{
+		result = calculateNodeValue(n.inputNode(0));
+	}
+	else
+	{
+		vector<bool> inputs;
+		for (int i = 0; i < n.getInputsCount(); i++)
+			inputs.push_back(calculateNodeValue(n.inputNode(i)));
+
+		string nodeType = n.getType();
+		result = simulateGate(nodeType, inputs);
+	}
+
+	n.setValue(result);
 	return result;
 }
