@@ -23,9 +23,6 @@ private:
 	void addInput(EdgePointer);
 	void assignTask(const string&, const string&);
 
-	bool resultValue;
-	bool valueSet;
-
 	Node();
 	Node(string, Circuit*);
 
@@ -38,10 +35,6 @@ public:
 
 	bool isInputPort() const;
 	bool isOutputPort() const;
-
-	bool getValue() const;
-	void setValue(bool resultValue);
-	bool isValueSet() const;
 
 	Node& inputNode(size_t index);
 	Node& outputNode(size_t index);

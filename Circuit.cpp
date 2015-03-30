@@ -1,5 +1,6 @@
 #include "Circuit.h"
 #include "EdgePointer.h"
+#include "ParseError.h"
 
 Circuit::Circuit()
 {
@@ -28,6 +29,7 @@ void Circuit::parseModuleLine(const string& line)
 
 void Circuit::insertNode(const string& port)
 {
+	if (nodeIndex.count(port)) throw ParseError("gate " + port + " already declared");
 	nodeIndex[port] = nodes.size();
 	nodes.push_back(Node(port,this));
     //cout << "New Node: " << port << endl;
@@ -35,7 +37,7 @@ void Circuit::insertNode(const string& port)
 
 void Circuit::parseFile(const string& fileName)
 {
-	if (!verifyFile(fileName)) return;
+	if (!verifyFile(fileName)) throw ParseError("File not found");
 	string ignoredString, line;
 	ifstream inputFile(fileName.c_str());
 	getline(inputFile, ignoredString);		// ignore the comment on the first line
@@ -45,7 +47,7 @@ void Circuit::parseFile(const string& fileName)
 	moduleName = line.substr(1, openBracketIndex - 1);
 
 	regex pattern1("(input|output|inout|reg|wire)( \\[\\d+\\:\\d+\\])? (\\w+)");
-	regex pattern2("([A-Z0-9]+) ([_0-9]+) \\(([^q]+)\\)");
+	regex pattern2("([A-Za-z0-9]+) ([_0-9a-zA-z]+) \\(([^]+)\\)");
 	regex pattern3("assign (.+) = 1'b(0|1);");
 	/*
 		match group 0 contains the entire string
@@ -90,6 +92,7 @@ void Circuit::parseFile(const string& fileName)
 
 void Circuit::insertNewEdge(const string& edgeName, const string& edgeType)
 {
+	if (edges.count(edgeName)) throw ParseError("wire \"" + edgeName + "\" already declared");
 	edges[edgeName] = Edge(edgeName, this);
 	EdgePointer pointer = edges.find(edgeName);
 	if (edgeType == "input"){
@@ -108,8 +111,6 @@ void Circuit::insertNewEdge(const string& edgeName, const string& edgeType)
 		nodes[nodeIndex].addInput(pointer);
 		edges[edgeName].addDestinationNode(nodeIndex);
 	}
-    
-    //cout << "New Edge: " << edgeName << " --- " << edgeType << endl;
 }
 
 void Circuit::insertNewNode(const string& nodeName, const string& nodeType, const string& portDescription)
@@ -130,6 +131,7 @@ std::string Circuit::getModuleName() const
 
 Node& Circuit::node(size_t index)
 {
+	if (index >= getNodesCount()) throw out_of_range("Node index out of range");
 	return nodes[index];
 }
 
@@ -150,6 +152,7 @@ size_t Circuit::getInputNodesCount() const
 
 Node& Circuit::inputNode(size_t index)
 {
+	if (index >= getInputNodesCount()) throw out_of_range("Node index out of range");
 	return node(inputNodes[index]);
 }
 
@@ -160,5 +163,6 @@ size_t Circuit::getOutputNodesCount() const
 
 Node& Circuit::outputNode(size_t index)
 {
+	if (index >= getOutputNodesCount()) throw out_of_range("Node index out of range");
 	return node(outputNodes[index]);
 }

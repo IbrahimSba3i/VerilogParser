@@ -1,18 +1,15 @@
 #include "Node.h"
 #include "Circuit.h"
+#include "ParseError.h"
 
 Node::Node()
 {
-	resultValue = 0;
-	valueSet = false;
 }
 
 Node::Node(string name, Circuit* circuit)
 {
 	this->name = name;
 	this->circuit = circuit;
-	resultValue = 0;
-	valueSet = false;
 }
 
 void Node::setNodeType(string nodeType)
@@ -33,9 +30,17 @@ void Node::addInput(EdgePointer edge)
 void Node::assignTask(const string& typeOfNode, const string& portsDescription)
 {
 	this->setNodeType(typeOfNode);
-	regex pattern("\\.([A-Z]+)\\((.+?)\\),[^]+?\\.([A-Z]+)\\((.+?)\\)(?:,[^]+?\\.([A-Z]+)\\((.+?)\\))?(?:,[^]+?\\.([A-Z]+)\\((.+)\\))?(?:,[^]+?\\.([A-Z]+)\\((.+?)\\))?");
+	
+	regex pattern1("\\.([A-Za-z0-9_]+)\\((.+?)\\),[^]+?\\.([A-Za-z0-9_]+)\\((.+?)\\)(?:,[^]+?\\.([A-Za-z0-9_]+)\\((.+?)\\))?(?:,[^]+?\\.([A-Za-z0-9_]+)\\((.+)\\))?(?:,[^]+?\\.([A-Za-z0-9_]+)\\((.+?)\\))?");
 	smatch match;
-	if (regex_search(portsDescription, match, pattern)){
+
+	string sp = "[\\t\\n\\r ]*";
+	string variableName("[a-zA-Z0-9\\[\\]]+");
+	regex pattern2(sp + "(" + variableName + ")" + sp + "((?:," + sp + variableName + sp + ")+)");
+	regex variableRegex("(" + variableName + ")");
+	smatch m, n;
+
+	if (regex_search(portsDescription, match, pattern1)){
 		for (int i = 1; i < 10; i += 2){
 			const string& Q = match[i].str();
 			const string& W = match[i + 1].str();
@@ -51,6 +56,24 @@ void Node::assignTask(const string& typeOfNode, const string& portsDescription)
 			}
 		}
 	}
+	
+	else
+	if (regex_search(portsDescription, m, pattern2)){
+		string gateName = m[1].str();
+		if (!circuit->edges.count(gateName)) throw ParseError("wire \"" + gateName + "\" was not declared!");
+		addOutput(EdgePointer(circuit->edges.find(gateName)));	
+		circuit->edges[gateName].setSourceNode(circuit->nodeIndex[name]);
+		string remainingList = m[2].str();
+		while (regex_search(remainingList, n, variableRegex))
+		{
+			if (!circuit->edges.count(n[1].str())) throw ParseError("wire \"" + n[1].str() + "\" was not declared!");
+			addInput(EdgePointer(circuit->edges.find(n[1])));
+			circuit->edges[n[1].str()].addDestinationNode(circuit->nodeIndex[name]);
+			int ind = remainingList.find(",", remainingList.find(",") + 1);
+			remainingList = (ind >= 0)? remainingList.substr(ind) : "";
+		}
+	}
+	
 }
 
 std::string Node::getName() const
@@ -74,22 +97,6 @@ bool Node::isOutputPort() const
 	return (type == "OUTPUT_PORT");
 }
 
-bool Node::getValue() const
-{
-	return resultValue;
-}
-
-void Node::setValue(bool resultValue)
-{
-	this->resultValue = resultValue;
-	valueSet = true;
-}
-
-bool Node::isValueSet() const
-{
-	return valueSet;
-}
-
 Node& Node::inputNode(size_t index)
 {
 	if (index >= getInputsCount()) throw std::out_of_range("Node index out of range");
@@ -98,6 +105,7 @@ Node& Node::inputNode(size_t index)
 
 Node& Node::outputNode(size_t index)
 {
+	if (index >= getOutputsCount()) throw std::out_of_range("Node index out of range");
 	size_t count = 0;
 	for (int i = 0; i < outputs.size(); i++)
 	{
@@ -108,7 +116,6 @@ Node& Node::outputNode(size_t index)
 		count += outputs[i]->nDestinations();
 	}
 	throw std::out_of_range("Node index out of range");
-	return Node();
 }
 
 size_t Node::getInputsCount()
