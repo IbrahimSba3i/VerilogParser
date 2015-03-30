@@ -1,6 +1,10 @@
 #pragma once
 #include "EdgePointer.h"
 
+#define FORWARD_CONNECTED	1
+#define BACKWARD_CONNECTED	-1
+#define NOT_CONNECTED		0
+
 class Connection
 {
 public:

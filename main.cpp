@@ -1,5 +1,4 @@
 #include "Circuit.h"
-#include "globals.h"
 #include "ParseError.h"
 
 using namespace std;

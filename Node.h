@@ -1,5 +1,12 @@
 #pragma once
-#include "globals.h"
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <map>
+#include <set>
+#include <regex>
+#include <queue>
 #include "EdgePointer.h"
 using namespace std;
 

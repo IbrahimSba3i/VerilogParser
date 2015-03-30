@@ -32,7 +32,6 @@ void Circuit::insertNode(const string& port)
 	if (nodeIndex.count(port)) throw ParseError("gate " + port + " already declared");
 	nodeIndex[port] = nodes.size();
 	nodes.push_back(Node(port,this));
-    //cout << "New Node: " << port << endl;
 }
 
 void Circuit::parseFile(const string& fileName)
@@ -46,9 +45,9 @@ void Circuit::parseFile(const string& fileName)
 	int openBracketIndex = line.find("(");
 	moduleName = line.substr(1, openBracketIndex - 1);
 
-	regex pattern1("(input|output|inout|reg|wire)( \\[\\d+\\:\\d+\\])? (\\w+)");
-	regex pattern2("([A-Za-z0-9]+) ([_0-9a-zA-z]+) \\(([^]+)\\)");
-	regex pattern3("assign (.+) = 1'b(0|1);");
+	regex wirePattern("(input|output|inout|reg|wire)( \\[\\d+\\:\\d+\\])? (\\w+)");
+	regex gatePattern("([A-Za-z0-9]+) ([_0-9a-zA-z]+) \\(([^]+)\\)");
+	regex assignPatern("assign (.+) = 1'b(0|1);");
 	/*
 		match group 0 contains the entire string
 		match group 1 contains the type of the edge
@@ -57,7 +56,7 @@ void Circuit::parseFile(const string& fileName)
 	*/
 	smatch match;
 	while (getline(inputFile, line, ';')){
-		if (regex_search(line, match, pattern1)){
+		if (regex_search(line, match, wirePattern)){
 			// parsing the array operator[7:0]
 			string arr = match[2].str();
 			if (arr.size()){
@@ -71,23 +70,20 @@ void Circuit::parseFile(const string& fileName)
 			else
 				insertNewEdge(match[3].str(), match[1].str());
 		}
-		else if (regex_search(line, match, pattern2))	// pattern1 doesn't match the string then it is a node
+		else if (regex_search(line, match, gatePattern))
 			insertNewNode(match[2], match[1], match[3]);
-		else if (regex_search(line, match, pattern3)){
+		else if (regex_search(line, match, assignPatern)){
 			edges[match[1].str()] = Edge(match[1].str(), this);
-			(match[2]=="1")? edges[match[1].str()].setSourceNode(CONST_ONE) : edges[match[1].str()].setSourceNode(CONST_ZERO);
-		}
-	}
-	connections.resize(nodes.size(), vector<Connection>(nodes.size()));
-	for (int i = 0; i < connections.size(); i++){
-		for (int j = 0; j < nodes[i].outputs.size(); j++){
-			for (int k = 0; k < nodes[i].outputs[j]->nDestinations(); k++){
-				connections[i][nodes[i].outputs[j]->getDestination(k)] = Connection(1,nodes[i].outputs[j]);
-				connections[nodes[i].outputs[j]->getDestination(k)][i] = Connection(-1, nodes[i].outputs[j]);
-			}
+			string constval = (match[2].str() == "1") ? "CONST_ONE" : "CONST_ZERO";
+			if (!nodeIndex.count(constval))
+				insertNode(constval);
+			edges[match[1].str()].setSourceNode(nodeIndex[constval]);
 		}
 	}
 
+	buildAdjacencyMatrix();
+
+	
 }
 
 void Circuit::insertNewEdge(const string& edgeName, const string& edgeType)
@@ -121,6 +117,7 @@ void Circuit::insertNewNode(const string& nodeName, const string& nodeType, cons
 
 vector<Connection>& Circuit::operator[](size_t index)
 {
+	if (index >= connections.size())  throw out_of_range("Index out of range");
 	return connections[index];
 }
 
@@ -137,7 +134,8 @@ Node& Circuit::node(size_t index)
 
 Node& Circuit::node(const string& nodeName)
 {
-	return nodes[nodeIndex[nodeName]];
+	if (!nodeIndex.count(nodeName)) throw invalid_argument("Node \"" + nodeName + "\" not found");
+	return node(nodeIndex[nodeName]);
 }
 
 size_t Circuit::getNodesCount() const
@@ -165,4 +163,17 @@ Node& Circuit::outputNode(size_t index)
 {
 	if (index >= getOutputNodesCount()) throw out_of_range("Node index out of range");
 	return node(outputNodes[index]);
+}
+
+void Circuit::buildAdjacencyMatrix()
+{
+	connections.resize(nodes.size(), vector<Connection>(nodes.size()));
+	for (int i = 0; i < connections.size(); i++){
+		for (int j = 0; j < nodes[i].outputs.size(); j++){
+			for (int k = 0; k < nodes[i].outputs[j]->nDestinations(); k++){
+				connections[i][nodes[i].outputs[j]->getDestination(k)] = Connection(1, nodes[i].outputs[j]);
+				connections[nodes[i].outputs[j]->getDestination(k)][i] = Connection(-1, nodes[i].outputs[j]);
+			}
+		}
+	}
 }

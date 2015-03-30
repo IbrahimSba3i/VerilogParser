@@ -3,14 +3,14 @@
 Edge::Edge()
 {
 	this->circuit = NULL;
-	source = UNKNOWN_INDEX;
+	source = -1;
 }
 
 Edge::Edge(string name, Circuit* circuit)
 {
 	this->name = name;
 	this->circuit = circuit;
-	source = UNKNOWN_INDEX;
+	source = -1;
 }
 
 Edge& Edge::operator=(const Edge& rhs)
@@ -34,7 +34,7 @@ void Edge::addDestinationNode(unsigned int index)
 
 void Edge::disconnect()
 {
-	source = UNKNOWN_INDEX;
+	source = -1;
 	destinations.clear();
 }
 

@@ -1,5 +1,4 @@
 #pragma once
-#include "globals.h"
 #include "Edge.h"
 using namespace std;
 

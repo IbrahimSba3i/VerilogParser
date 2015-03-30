@@ -1,10 +1,15 @@
 #pragma once
-#include "globals.h"
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <map>
+#include <set>
+#include <regex>
+#include <queue>
 #include "Node.h"
 #include "Edge.h"
 #include "Connection.h"
-#include <fstream>
-#include <regex>
 using namespace std;
 
 class Circuit
@@ -15,6 +20,7 @@ private:
 	void insertNode(const string&);
 	void insertNewEdge(const string&, const string&);
 	void insertNewNode(const string&, const string&, const string&);
+	void buildAdjacencyMatrix();
 	vector< vector<Connection> > connections;
 	vector<int> outputNodes;
 	vector<int> inputNodes;
@@ -28,7 +34,7 @@ public:
 
 	Circuit();										
 	void parseFile(const string&);						// Gets the path to the Verilog gate level netlist file
-	
+
 	vector<string> getInputPorts() const;				// Returns a vector containing the names of the input ports
 	vector<string> getOutputPorts() const;				// Returns a vector containing the names of the output ports
 	

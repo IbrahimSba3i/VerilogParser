@@ -31,41 +31,39 @@ void Node::assignTask(const string& typeOfNode, const string& portsDescription)
 {
 	this->setNodeType(typeOfNode);
 	
-	regex pattern1("\\.([A-Za-z0-9_]+)\\((.+?)\\),[^]+?\\.([A-Za-z0-9_]+)\\((.+?)\\)(?:,[^]+?\\.([A-Za-z0-9_]+)\\((.+?)\\))?(?:,[^]+?\\.([A-Za-z0-9_]+)\\((.+)\\))?(?:,[^]+?\\.([A-Za-z0-9_]+)\\((.+?)\\))?");
-	smatch match;
-
 	string sp = "[\\t\\n\\r ]*";
 	string variableName("[a-zA-Z0-9\\[\\]]+");
+
+	regex pattern1("\\.([A-Za-z0-9_]+)\\((.+?)\\),[^]+?\\.([A-Za-z0-9_]+)\\((.+?)\\)(?:,[^]+?\\.([A-Za-z0-9_]+)\\((.+?)\\))?(?:,[^]+?\\.([A-Za-z0-9_]+)\\((.+)\\))?(?:,[^]+?\\.([A-Za-z0-9_]+)\\((.+?)\\))?");
 	regex pattern2(sp + "(" + variableName + ")" + sp + "((?:," + sp + variableName + sp + ")+)");
 	regex variableRegex("(" + variableName + ")");
+	
 	smatch m, n;
 
-	if (regex_search(portsDescription, match, pattern1)){
+	if (regex_search(portsDescription, m, pattern1)){
 		for (int i = 1; i < 10; i += 2){
-			const string& Q = match[i].str();
-			const string& W = match[i + 1].str();
-			if (match[i].length() && match[i + 1].length()){
-				if (match[i] == "Q" || match[i] == "Y"){
-					addOutput(EdgePointer(circuit->edges.find(match[i + 1])));
-					circuit->edges[match[i + 1]].setSourceNode(circuit->nodeIndex[name]);
+			const string& Q = m[i].str();
+			const string& W = m[i + 1].str();
+			if (m[i].length() && m[i + 1].length()){
+				if (m[i] == "Q" || m[i] == "Y"){
+					addOutput(EdgePointer(circuit->edges.find(m[i + 1])));
+					circuit->edges[m[i + 1]].setSourceNode(circuit->nodeIndex[name]);
 				}
 				else{
-					addInput(EdgePointer(circuit->edges.find(match[i + 1])));
-					circuit->edges[match[i + 1]].addDestinationNode(circuit->nodeIndex[name]);
+					addInput(EdgePointer(circuit->edges.find(m[i + 1])));
+					circuit->edges[m[i + 1]].addDestinationNode(circuit->nodeIndex[name]);
 				}
 			}
 		}
 	}
 	
-	else
-	if (regex_search(portsDescription, m, pattern2)){
+	else if (regex_search(portsDescription, m, pattern2)){
 		string gateName = m[1].str();
 		if (!circuit->edges.count(gateName)) throw ParseError("wire \"" + gateName + "\" was not declared!");
 		addOutput(EdgePointer(circuit->edges.find(gateName)));	
 		circuit->edges[gateName].setSourceNode(circuit->nodeIndex[name]);
 		string remainingList = m[2].str();
-		while (regex_search(remainingList, n, variableRegex))
-		{
+		while (regex_search(remainingList, n, variableRegex)){
 			if (!circuit->edges.count(n[1].str())) throw ParseError("wire \"" + n[1].str() + "\" was not declared!");
 			addInput(EdgePointer(circuit->edges.find(n[1])));
 			circuit->edges[n[1].str()].addDestinationNode(circuit->nodeIndex[name]);
@@ -107,10 +105,8 @@ Node& Node::outputNode(size_t index)
 {
 	if (index >= getOutputsCount()) throw std::out_of_range("Node index out of range");
 	size_t count = 0;
-	for (int i = 0; i < outputs.size(); i++)
-	{
-		if (count + outputs[i]->nDestinations() > index)
-		{
+	for (int i = 0; i < outputs.size(); i++){
+		if (count + outputs[i]->nDestinations() > index){
 			return circuit->node(outputs[i]->getDestination(index - count));
 		}
 		count += outputs[i]->nDestinations();
