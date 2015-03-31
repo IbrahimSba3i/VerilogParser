@@ -20,7 +20,8 @@ class Node
 {
 private:
 	Circuit* circuit;
-	int level;
+	int tRise, tFall;
+
 	string type;
 	string name;
 	vector<EdgePointer> inputs;
@@ -28,7 +29,7 @@ private:
 	void setNodeType(string);
 	void addOutput(EdgePointer);
 	void addInput(EdgePointer);
-	void assignTask(const string&, const string&);
+	void assignTask(const string&, const string&, const string&, const string&);
 
 	Node();
 	Node(string, Circuit*);

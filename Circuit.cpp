@@ -4,8 +4,16 @@
 
 Circuit::Circuit()
 {
-	
+	emptyNodesCounter = 0;
 }
+
+Circuit::Circuit(const string& filename)
+{
+	emptyNodesCounter = 0;
+
+	parseFile(filename);
+}
+
 
 bool Circuit::verifyFile(const string& fileName)
 {
@@ -37,16 +45,20 @@ void Circuit::insertNode(const string& port)
 void Circuit::parseFile(const string& fileName)
 {
 	if (!verifyFile(fileName)) throw ParseError("File not found");
-	string ignoredString, line;
+	string line;
 	ifstream inputFile(fileName.c_str());
-	getline(inputFile, ignoredString);		// ignore the comment on the first line
-	inputFile >> ignoredString;				// ignore the word "module"
+
+	inputFile >> line;
+	while (line != "module") inputFile >> line;
 	getline(inputFile, line);
 	int openBracketIndex = line.find("(");
 	moduleName = line.substr(1, openBracketIndex - 1);
 
-	regex wirePattern("(input|output|inout|reg|wire)( \\[\\d+\\:\\d+\\])? (\\w+)");
-	regex gatePattern("([A-Za-z0-9]+) ([_0-9a-zA-z]+) \\(([^]+)\\)");
+	string osp = "[\\t\\n\\r ]*";
+	string sp = "[\\t\\n\\r ]+";
+	string delayPart = "((?:#\\(" + osp + "([0-9]+)" + osp + "," + osp + "([0-9]+)" + osp + "\\))?)";
+	regex wirePattern("(input|output|inout|reg|wire)" + osp + "(\\[\\d+\\:\\d+\\])?" + sp + "(\\w+)");
+	regex gatePattern("([A-Za-z0-9]+)" + sp + "([_0-9a-zA-z]+)?" + osp + delayPart + "\\(([^]+)\\)");
 	regex assignPatern("assign (.+) = 1'b(0|1);");
 	/*
 		match group 0 contains the entire string
@@ -56,12 +68,19 @@ void Circuit::parseFile(const string& fileName)
 	*/
 	smatch match;
 	while (getline(inputFile, line, ';')){
+
+		int commentIndex = line.find("//");
+		int nwlnIndex = line.find("\n");
+		if (nwlnIndex != -1 && commentIndex != -1 && nwlnIndex > commentIndex){
+			line.erase(commentIndex, nwlnIndex - commentIndex + 1);
+		}
+
 		if (regex_search(line, match, wirePattern)){
 			// parsing the array operator[7:0]
 			string arr = match[2].str();
 			if (arr.size()){
 				int colonIndex = arr.find(":");
-				int firstNumber = atoi(arr.substr(2, colonIndex - 1).c_str());
+				int firstNumber = atoi(arr.substr(1, colonIndex - 1).c_str());
 				int secondNumber = atoi(arr.substr(colonIndex + 1, arr.size() - 1 - colonIndex).c_str());
 				if (firstNumber < secondNumber) swap(firstNumber, secondNumber);
 				for (int i = firstNumber; i >= secondNumber; i--)
@@ -71,7 +90,7 @@ void Circuit::parseFile(const string& fileName)
 				insertNewEdge(match[3].str(), match[1].str());
 		}
 		else if (regex_search(line, match, gatePattern))
-			insertNewNode(match[2], match[1], match[3]);
+			insertNewNode(match[2], match[1], match[6], match[4], match[5]);
 		else if (regex_search(line, match, assignPatern)){
 			edges[match[1].str()] = Edge(match[1].str(), this);
 			string constval = (match[2].str() == "1") ? "CONST_ONE" : "CONST_ZERO";
@@ -109,10 +128,10 @@ void Circuit::insertNewEdge(const string& edgeName, const string& edgeType)
 	}
 }
 
-void Circuit::insertNewNode(const string& nodeName, const string& nodeType, const string& portDescription)
+void Circuit::insertNewNode(const string& nodeName, const string& nodeType, const string& portDescription, const string& trise, const string& tfall)
 {
-	insertNode(nodeName);
-	nodes[nodes.size() - 1].assignTask(nodeType, portDescription);
+	insertNode(nodeName == "" ? (string("UNKNOWN_GATE_") + to_string(emptyNodesCounter++)) : nodeName);
+	nodes[nodes.size() - 1].assignTask(nodeType, portDescription, trise, tfall);
 }
 
 vector<Connection>& Circuit::operator[](size_t index)

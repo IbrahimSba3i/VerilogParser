@@ -19,7 +19,7 @@ private:
 	void parseModuleLine(const string&);
 	void insertNode(const string&);
 	void insertNewEdge(const string&, const string&);
-	void insertNewNode(const string&, const string&, const string&);
+	void insertNewNode(const string&, const string&, const string&, const string&, const string&);
 	void buildAdjacencyMatrix();
 	vector< vector<Connection> > connections;
 	vector<int> outputNodes;
@@ -28,11 +28,13 @@ private:
 	string moduleName;
 	map<string, int> nodeIndex;
 	map<string, Edge> edges;
+	int emptyNodesCounter;
 public:
 	friend class Node;
 	friend class Edge;
 
-	Circuit();										
+	Circuit();		
+	Circuit(const string&);
 	void parseFile(const string&);						// Gets the path to the Verilog gate level netlist file
 
 	vector<string> getInputPorts() const;				// Returns a vector containing the names of the input ports

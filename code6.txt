@@ -30,7 +30,7 @@ module add2(x, y, ci, s, co);
   nand nd3 (w8, ci, w0);
   nand nd4 ( w9, w6, w8);
   xnor xnr1 ( w5, w9, w4);
-  nand nd5 ( w10, w3, w9);
+  nand ( w10, w3, w9);
   nand nd6 (w7, w1, w10 );
   buf b1 ( co, w7);
   buf b2 ( s[0], w2);

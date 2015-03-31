@@ -4,12 +4,14 @@
 
 Node::Node()
 {
+	tRise = tFall = 0;
 }
 
 Node::Node(string name, Circuit* circuit)
 {
 	this->name = name;
 	this->circuit = circuit;
+	tRise = tFall = 0;
 }
 
 void Node::setNodeType(string nodeType)
@@ -27,9 +29,12 @@ void Node::addInput(EdgePointer edge)
 	inputs.push_back(edge);
 }
 
-void Node::assignTask(const string& typeOfNode, const string& portsDescription)
+void Node::assignTask(const string& typeOfNode, const string& portsDescription, const string& trise, const string& tfall)
 {
 	this->setNodeType(typeOfNode);
+
+	tRise = (trise == "") ? 0 : stoi(trise);
+	tFall = (tfall == "") ? 0 : stoi(tfall);
 	
 	string sp = "[\\t\\n\\r ]*";
 	string variableName("[a-zA-Z0-9\\[\\]]+");
