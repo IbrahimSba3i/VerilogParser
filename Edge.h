@@ -17,9 +17,9 @@ private:
 	unsigned int source;
 	vector<unsigned int> destinations;
 	Circuit* circuit;
-public:
+
     string name;
-	Edge();
+	
 	Edge(string, Circuit*);
 	Edge& operator=(const Edge&);
 
@@ -31,4 +31,9 @@ public:
 	void setSourceNode(unsigned int);
 	void addDestinationNode(unsigned int);
 	void disconnect();
+
+public:
+	friend class Circuit;
+	friend class Node;
+	Edge();
 };

@@ -10,10 +10,16 @@ const Edge& Connection::operator*() const{	return it->operator*();}
 
 const Edge* Connection::operator->() const{	return it->operator->();}
 
-Connection::operator bool(){	return (value==1);}
+Connection::operator bool() const{	return (value==1);}
 
 bool Connection::isConnectedForward() const{	return (value == 1);}
 
 bool Connection::isConnectedBackward() const{ return (value == -1);}
 
 bool Connection::isConnected() const{ return (value == 0);}
+
+ostream& operator<<(ostream& out, const Connection& c)
+{
+	out << bool(c);
+	return out;
+}

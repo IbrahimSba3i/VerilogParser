@@ -12,7 +12,8 @@ using namespace std;
 class Node;
 class NodePointer
 {
-public:
+private:
+	friend class Circuit;
 	typedef vector<Node>::iterator NodeItr;
 	NodePointer(NodeItr);
 	NodePointer(int = 0);
