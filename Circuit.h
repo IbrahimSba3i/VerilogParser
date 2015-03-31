@@ -28,6 +28,7 @@ private:
 	string moduleName;
 	map<string, int> nodeIndex;
 	map<string, Edge> edges;
+	map<string, pair<double, double> > delays;
 	int emptyNodesCounter;
 public:
 	friend class Node;
@@ -35,7 +36,9 @@ public:
 
 	Circuit();		
 	Circuit(const string&);
+	Circuit(const string&, const string&);
 	void parseFile(const string&);						// Gets the path to the Verilog gate level netlist file
+	void parseDelaysFile(const string&);
 
 	vector<string> getInputPorts() const;				// Returns a vector containing the names of the input ports
 	vector<string> getOutputPorts() const;				// Returns a vector containing the names of the output ports

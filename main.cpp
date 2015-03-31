@@ -1,19 +1,23 @@
+#include <iostream>
 #include "Circuit.h"
 #include "ParseError.h"
 
 using namespace std;
 
+void printLn()
+{
+	int o = 78; cout << " "; while (o--) cout << "-"; cout << endl;
+}
 
-Circuit circuit;
 
 int main()
 {
 	try{
-		circuit.parseFile("code6.txt");
-		
+		Circuit circuit;
+		circuit.parseFile("code6.v");
+		circuit.parseDelaysFile("gateDelays.delay");
 		cout << endl << " Adjacency matrix: " << endl << endl;
 		for (int i = 0; i < circuit.getNodesCount(); i++){
-			cout << " ";
 			for (int j = 0; j < circuit.getNodesCount(); j++){
 				cout << circuit[i][j];
 			}
@@ -21,7 +25,7 @@ int main()
 		}
 
 		cout << endl;
-		int o = 78; cout << " "; while (o--) cout << "-"; cout << endl;
+		printLn();
 
 		for (int i = 0; i < circuit.getNodesCount(); i++){	
 			cout << " Node " << i << endl;
@@ -29,20 +33,20 @@ int main()
 			cout << "  type:      " << circuit.node(i).getType() << endl;
 			cout << "  is input:  " << (circuit.node(i).isInputPort() ? "Yes" : "No") << endl;
 			cout << "  is output: " << (circuit.node(i).isOutputPort() ? "Yes" : "No") << endl;
-			int o = 78; cout << " "; while (o--) cout << "-"; cout << endl;
+			cout << "  trise:     " << circuit.node(i).getTRise() << endl;
+			cout << "  tfall:     " << circuit.node(i).getTFall() << endl;
+			printLn();
 		}
 
-		cout << endl << endl;
 	}
-	catch (ParseError& e)
-	{
+	catch (ParseError& e){
 		cout << "ParseError: " << e.what() << endl;
 	}
-	catch (exception& e)
-	{
+	catch (exception& e){
 		cout << e.what() << endl;
 	}
 
+	cout << endl << endl;
 	system("pause");
 	return 0;
 }

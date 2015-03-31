@@ -20,7 +20,7 @@ class Node
 {
 private:
 	Circuit* circuit;
-	int tRise, tFall;
+	double tRise, tFall;
 
 	string type;
 	string name;
@@ -49,5 +49,10 @@ public:
 
 	size_t getInputsCount();
 	size_t getOutputsCount();
+
+	double getTRise() const;
+	double getTFall() const;
+	void setTRise(double d);
+	void setTFall(double d);
 };
 

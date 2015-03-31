@@ -19,7 +19,7 @@ module add2(x, y, ci, s, co);
   output [1:0] s;
   input [1:0] x;
   input [1:0] y;
-  and a1 (w11, x[0],y[0]);
+  and #(1,8) a1 (w11, x[0],y[0]);
   nor nr1 (w12, x[0],y[0]);
   nor nr2 (w0, w12, w11);
   xor xr1 ( w2, ci, w0 );

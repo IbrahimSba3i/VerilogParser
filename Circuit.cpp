@@ -14,6 +14,13 @@ Circuit::Circuit(const string& filename)
 	parseFile(filename);
 }
 
+Circuit::Circuit(const string& filename, const string& delaysFileName)
+{
+	emptyNodesCounter = 0;
+
+	parseFile(filename);
+	parseDelaysFile(delaysFileName);
+}
 
 bool Circuit::verifyFile(const string& fileName)
 {
@@ -40,6 +47,10 @@ void Circuit::insertNode(const string& port)
 	if (nodeIndex.count(port)) throw ParseError("gate " + port + " already declared");
 	nodeIndex[port] = nodes.size();
 	nodes.push_back(Node(port,this));
+	if (delays.count(nodes[nodes.size() - 1].getType())){
+		nodes[nodes.size() - 1].setTRise(delays[nodes[nodes.size() - 1].getType()].first);
+		nodes[nodes.size() - 1].setTFall(delays[nodes[nodes.size() - 1].getType()].second);
+	}
 }
 
 void Circuit::parseFile(const string& fileName)
@@ -58,14 +69,8 @@ void Circuit::parseFile(const string& fileName)
 	string sp = "[\\t\\n\\r ]+";
 	string delayPart = "((?:#\\(" + osp + "([0-9]+)" + osp + "," + osp + "([0-9]+)" + osp + "\\))?)";
 	regex wirePattern("(input|output|inout|reg|wire)" + osp + "(\\[\\d+\\:\\d+\\])?" + sp + "(\\w+)");
-	regex gatePattern("([A-Za-z0-9]+)" + sp + "([_0-9a-zA-z]+)?" + osp + delayPart + "\\(([^]+)\\)");
+	regex gatePattern("([A-Za-z0-9]+)" + sp + delayPart + osp + "([_0-9a-zA-z]+)?" + osp + "\\(([^]+)\\)");
 	regex assignPatern("assign (.+) = 1'b(0|1);");
-	/*
-		match group 0 contains the entire string
-		match group 1 contains the type of the edge
-		match group 2 contains the array definition
-		match group 3 contains the variable name
-	*/
 	smatch match;
 	while (getline(inputFile, line, ';')){
 
@@ -89,8 +94,9 @@ void Circuit::parseFile(const string& fileName)
 			else
 				insertNewEdge(match[3].str(), match[1].str());
 		}
-		else if (regex_search(line, match, gatePattern))
-			insertNewNode(match[2], match[1], match[6], match[4], match[5]);
+		else if (regex_search(line, match, gatePattern)){
+			insertNewNode(match[5], match[1], match[6], match[3], match[4]);
+		}
 		else if (regex_search(line, match, assignPatern)){
 			edges[match[1].str()] = Edge(match[1].str(), this);
 			string constval = (match[2].str() == "1") ? "CONST_ONE" : "CONST_ZERO";
@@ -99,6 +105,7 @@ void Circuit::parseFile(const string& fileName)
 			edges[match[1].str()].setSourceNode(nodeIndex[constval]);
 		}
 	}
+	inputFile.close();
 
 	buildAdjacencyMatrix();
 
@@ -195,4 +202,28 @@ void Circuit::buildAdjacencyMatrix()
 			}
 		}
 	}
+}
+
+void Circuit::parseDelaysFile(const string& fileName)
+{
+	if (!verifyFile(fileName)) throw ParseError("File not found");
+	
+	ifstream inputFile(fileName.c_str());
+	
+	string gateType; 
+	double d1, d2;
+	while (inputFile >> gateType >> d1 >> d2){
+		delays[gateType] = make_pair(d1, d2);
+	}
+
+	for (int i = 0; i < getNodesCount(); i++){
+		if (delays.count(node(i).getType())){
+			if (node(i).getTRise() == 0)
+				node(i).setTRise(delays[node(i).getType()].first);
+			if (node(i).getTFall() == 0)
+				node(i).setTFall(delays[node(i).getType()].second);
+		}
+	}
+
+	inputFile.close();
 }

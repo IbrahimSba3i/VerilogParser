@@ -33,8 +33,8 @@ void Node::assignTask(const string& typeOfNode, const string& portsDescription, 
 {
 	this->setNodeType(typeOfNode);
 
-	tRise = (trise == "") ? 0 : stoi(trise);
-	tFall = (tfall == "") ? 0 : stoi(tfall);
+	tRise = (trise == "") ? 0 : stod(trise);
+	tFall = (tfall == "") ? 0 : stod(tfall);
 	
 	string sp = "[\\t\\n\\r ]*";
 	string variableName("[a-zA-Z0-9\\[\\]]+");
@@ -132,3 +132,22 @@ size_t Node::getOutputsCount()
 	return s;
 }
 
+double Node::getTRise() const
+{
+	return tRise;
+}
+
+double Node::getTFall() const
+{
+	return tFall;
+}
+
+void Node::setTRise(double d)
+{
+	tRise = d;
+}
+
+void Node::setTFall(double d)
+{
+	tFall = d;
+}
