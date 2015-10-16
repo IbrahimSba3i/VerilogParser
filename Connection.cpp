@@ -23,3 +23,7 @@ ostream& operator<<(ostream& out, const Connection& c)
 	out << bool(c);
 	return out;
 }
+
+bool Connection::operator==(int x) const {
+	return (value == x);
+}

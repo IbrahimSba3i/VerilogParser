@@ -17,6 +17,7 @@ public:
 	bool isConnectedBackward() const;
 	bool isConnected() const;
 	operator bool() const;
+	bool operator==(int) const;
 private:
 	EdgePointer* it;
 	int value;

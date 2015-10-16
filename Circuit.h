@@ -57,5 +57,7 @@ public:
 
 	Node& inputNode(size_t index);
 	size_t getInputNodesCount() const;
+
+	size_t getGatesCount() const;
 };
 

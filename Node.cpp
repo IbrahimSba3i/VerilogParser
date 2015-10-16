@@ -7,6 +7,32 @@ Node::Node()
 	tRise = tFall = 0;
 }
 
+Node::Node(const Node& other)
+{
+	this->name = other.name;
+	this->circuit = other.circuit;
+	this->inputs = other.inputs;
+	this->outputs = other.outputs;
+	this->type = other.type;
+	this->tRise = other.tRise;
+	this->tFall = other.tFall;
+}
+
+Node& Node::operator=(const Node& other)
+{
+	if (this != &other)
+	{
+		this->name = other.name;
+		this->circuit = other.circuit;
+		this->inputs = other.inputs;
+		this->outputs = other.outputs;
+		this->type = other.type;
+		this->tRise = other.tRise;
+		this->tFall = other.tFall;
+	}
+	return *this;
+}
+
 Node::Node(string name, Circuit* circuit)
 {
 	this->name = name;
@@ -98,6 +124,11 @@ bool Node::isInputPort() const
 bool Node::isOutputPort() const
 {
 	return (type == "OUTPUT_PORT");
+}
+
+bool Node::isGate() const
+{
+	return (!isInputPort() && !isOutputPort());
 }
 
 Node& Node::inputNode(size_t index)

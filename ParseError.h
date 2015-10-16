@@ -1,5 +1,6 @@
 #pragma once
 #include <stdexcept>
+#include <string>
 using namespace std;
 class ParseError : public exception
 {

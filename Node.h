@@ -38,11 +38,15 @@ public:
 	friend class Circuit;
 	friend class Edge;
 
+	Node(const Node&);
+	Node& operator=(const Node&);
+
 	string getName() const;				// Returns the input or gate name
 	string getType() const;				// Returns the type of the gate
 
 	bool isInputPort() const;
 	bool isOutputPort() const;
+	bool isGate() const;
 
 	Node& inputNode(size_t index);
 	Node& outputNode(size_t index);

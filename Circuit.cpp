@@ -227,3 +227,11 @@ void Circuit::parseDelaysFile(const string& fileName)
 
 	inputFile.close();
 }
+
+size_t Circuit::getGatesCount() const {
+	return getNodesCount() - getInputNodesCount() - getOutputNodesCount();
+}
+
+size_t Circuit::getNodeIndex(const string& nodeName) const {
+	return nodeIndex.at(nodeName);
+}
