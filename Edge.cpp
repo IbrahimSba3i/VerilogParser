@@ -1,4 +1,7 @@
 #include "Edge.h"
+#include "EdgePointer.h"
+#include "Node.h"
+#include "Circuit.h"
 
 Edge::Edge()
 {

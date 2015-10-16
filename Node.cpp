@@ -1,5 +1,7 @@
 #include "Node.h"
 #include "Circuit.h"
+#include "Edge.h"
+#include "EdgePointer.h"
 #include "ParseError.h"
 
 Node::Node()

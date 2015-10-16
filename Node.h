@@ -11,7 +11,7 @@
 using namespace std;
 
 class Circuit;
-
+class Edge;
 /*
 	Node class represents an input/output port or a gate 
 */

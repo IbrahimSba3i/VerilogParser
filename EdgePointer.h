@@ -1,7 +1,12 @@
 #pragma once
-#include "Edge.h"
+#include <map>
+#include <string>
 using namespace std;
 
+class Node;
+class Connection;
+class Circuit;
+class Edge;
 class EdgePointer
 {
 private:

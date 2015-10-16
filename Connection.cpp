@@ -1,4 +1,7 @@
 #include "Connection.h"
+#include "EdgePointer.h"
+#include "Edge.h"
+#include <iostream>
 
 Connection::Connection() :value(0), it(NULL){}
 

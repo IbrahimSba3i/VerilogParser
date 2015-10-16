@@ -11,6 +11,7 @@
 using namespace std;
 class EdgePointer;
 class Circuit;
+class Node;
 class Edge
 {
 private:
