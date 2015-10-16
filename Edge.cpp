@@ -3,60 +3,63 @@
 #include "Node.h"
 #include "Circuit.h"
 
-Edge::Edge()
+namespace vp
 {
-	this->circuit = NULL;
-	source = -1;
-}
+	Edge::Edge()
+	{
+		this->circuit = NULL;
+		source = -1;
+	}
 
-Edge::Edge(string name, Circuit* circuit)
-{
-	this->name = name;
-	this->circuit = circuit;
-	source = -1;
-}
+	Edge::Edge(string name, Circuit* circuit)
+	{
+		this->name = name;
+		this->circuit = circuit;
+		source = -1;
+	}
 
-Edge& Edge::operator=(const Edge& rhs)
-{
-	name = rhs.name;
-	circuit = rhs.circuit;
-	source = rhs.source;
-	destinations = rhs.destinations;
-	return *this;
-}
+	Edge& Edge::operator=(const Edge& rhs)
+	{
+		name = rhs.name;
+		circuit = rhs.circuit;
+		source = rhs.source;
+		destinations = rhs.destinations;
+		return *this;
+	}
 
-void Edge::setSourceNode(unsigned int index)
-{
-	source = index;
-}
+	void Edge::setSourceNode(unsigned int index)
+	{
+		source = index;
+	}
 
-void Edge::addDestinationNode(unsigned int index)
-{
-	destinations.push_back(index);
-}
+	void Edge::addDestinationNode(unsigned int index)
+	{
+		destinations.push_back(index);
+	}
 
-void Edge::disconnect()
-{
-	source = -1;
-	destinations.clear();
-}
+	void Edge::disconnect()
+	{
+		source = -1;
+		destinations.clear();
+	}
 
-unsigned int Edge::getSource() const
-{
-	return source;
-}
+	unsigned int Edge::getSource() const
+	{
+		return source;
+	}
 
-unsigned int Edge::getDestination(unsigned int i) const
-{
-	return destinations[i];
-}
+	unsigned int Edge::getDestination(unsigned int i) const
+	{
+		return destinations[i];
+	}
 
-vector <unsigned int>* Edge::getDestinations()
-{
-	return &destinations;
-}
+	vector <unsigned int>* Edge::getDestinations()
+	{
+		return &destinations;
+	}
 
-unsigned int Edge::nDestinations() const
-{
-	return destinations.size();
+	unsigned int Edge::nDestinations() const
+	{
+		return destinations.size();
+	}
 }

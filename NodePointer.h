@@ -9,15 +9,18 @@
 #include <queue>
 using namespace std;
 
-class Node;
-class NodePointer
+namespace vp
 {
-private:
-	friend class Circuit;
-	typedef vector<Node>::iterator NodeItr;
-	NodePointer(NodeItr);
-	NodePointer(int = 0);
-	const Node& operator*() const;
-	const Node* operator->() const;
-	NodeItr it;
-};
+	class Node;
+	class NodePointer
+	{
+	private:
+		friend class Circuit;
+		typedef vector<Node>::iterator NodeItr;
+		NodePointer(NodeItr);
+		NodePointer(int = 0);
+		const Node& operator*() const;
+		const Node* operator->() const;
+		NodeItr it;
+	};
+}

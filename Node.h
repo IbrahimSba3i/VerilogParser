@@ -10,53 +10,56 @@
 #include "EdgePointer.h"
 using namespace std;
 
-class Circuit;
-class Edge;
-/*
-	Node class represents an input/output port or a gate 
-*/
-
-class Node
+namespace vp
 {
-private:
-	Circuit* circuit;
-	double tRise, tFall;
+	class Circuit;
+	class Edge;
+	/*
+		Node class represents an input/output port or a gate
+		*/
 
-	string type;
-	string name;
-	vector<EdgePointer> inputs;
-	vector<EdgePointer> outputs;
-	void setNodeType(string);
-	void addOutput(EdgePointer);
-	void addInput(EdgePointer);
-	void assignTask(const string&, const string&, const string&, const string&);
+	class Node
+	{
+	private:
+		Circuit* circuit;
+		double tRise, tFall;
 
-	Node();
-	Node(string, Circuit*);
+		string type;
+		string name;
+		vector<EdgePointer> inputs;
+		vector<EdgePointer> outputs;
+		void setNodeType(string);
+		void addOutput(EdgePointer);
+		void addInput(EdgePointer);
+		void assignTask(const string&, const string&, const string&, const string&);
 
-public:
-	friend class Circuit;
-	friend class Edge;
+		Node();
+		Node(string, Circuit*);
 
-	Node(const Node&);
-	Node& operator=(const Node&);
+	public:
+		friend class Circuit;
+		friend class Edge;
 
-	string getName() const;				// Returns the input or gate name
-	string getType() const;				// Returns the type of the gate
+		Node(const Node&);
+		Node& operator=(const Node&);
 
-	bool isInputPort() const;
-	bool isOutputPort() const;
-	bool isGate() const;
+		string getName() const;				// Returns the input or gate name
+		string getType() const;				// Returns the type of the gate
 
-	Node& inputNode(size_t index);
-	Node& outputNode(size_t index);
+		bool isInputPort() const;
+		bool isOutputPort() const;
+		bool isGate() const;
 
-	size_t getInputsCount();
-	size_t getOutputsCount();
+		Node& inputNode(size_t index);
+		Node& outputNode(size_t index);
 
-	double getTRise() const;
-	double getTFall() const;
-	void setTRise(double d);
-	void setTFall(double d);
-};
+		size_t getInputsCount();
+		size_t getOutputsCount();
 
+		double getTRise() const;
+		double getTFall() const;
+		void setTRise(double d);
+		void setTFall(double d);
+	};
+
+}

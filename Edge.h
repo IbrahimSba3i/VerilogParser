@@ -9,32 +9,38 @@
 #include <queue>
 
 using namespace std;
-class EdgePointer;
-class Circuit;
-class Node;
-class Edge
+
+namespace vp
 {
-private:
-	unsigned int source;
-	vector<unsigned int> destinations;
-	Circuit* circuit;
 
-    string name;
-	
-	Edge(string, Circuit*);
-	Edge& operator=(const Edge&);
+	class EdgePointer;
+	class Circuit;
+	class Node;
+	class Edge
+	{
+	private:
+		unsigned int source;
+		vector<unsigned int> destinations;
+		Circuit* circuit;
 
-	unsigned int getSource() const;
-	unsigned int getDestination(unsigned int) const;
-    vector <unsigned int>* getDestinations();
-	unsigned int nDestinations() const;
+		string name;
 
-	void setSourceNode(unsigned int);
-	void addDestinationNode(unsigned int);
-	void disconnect();
+		Edge(string, Circuit*);
+		Edge& operator=(const Edge&);
 
-public:
-	friend class Circuit;
-	friend class Node;
-	Edge();
-};
+		unsigned int getSource() const;
+		unsigned int getDestination(unsigned int) const;
+		vector <unsigned int>* getDestinations();
+		unsigned int nDestinations() const;
+
+		void setSourceNode(unsigned int);
+		void addDestinationNode(unsigned int);
+		void disconnect();
+
+	public:
+		friend class Circuit;
+		friend class Node;
+		Edge();
+	};
+
+}

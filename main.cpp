@@ -3,6 +3,7 @@
 #include "ParseError.h"
 
 using namespace std;
+using namespace vp;
 
 void printLn();
 
