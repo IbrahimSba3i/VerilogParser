@@ -1,27 +1,21 @@
 #include "Edge.h"
-#include "EdgePointer.h"
-#include "Node.h"
-#include "Circuit.h"
 
 namespace vp
 {
 	Edge::Edge()
 	{
-		this->circuit = NULL;
 		source = -1;
 	}
 
-	Edge::Edge(string name, Circuit* circuit)
+	Edge::Edge(string name)
 	{
 		this->name = name;
-		this->circuit = circuit;
 		source = -1;
 	}
 
 	Edge& Edge::operator=(const Edge& rhs)
 	{
 		name = rhs.name;
-		circuit = rhs.circuit;
 		source = rhs.source;
 		destinations = rhs.destinations;
 		return *this;

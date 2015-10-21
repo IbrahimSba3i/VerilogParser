@@ -13,7 +13,6 @@ using namespace std;
 namespace vp
 {
 	class Circuit;
-	class Edge;
 	/*
 		Node class represents an input/output port or a gate
 		*/
@@ -26,23 +25,22 @@ namespace vp
 
 		string type;
 		string name;
-		vector<EdgePointer> inputs;
-		vector<EdgePointer> outputs;
+
+
+	public:
+
+		Node(const Node&);
+		Node& operator=(const Node&);
+		Node();
+		Node(string, Circuit*);
 		void setNodeType(string);
 		void addOutput(EdgePointer);
 		void addInput(EdgePointer);
 		void assignTask(const string&, const string&, const string&, const string&);
-
-		Node();
-		Node(string, Circuit*);
-
-	public:
-		friend class Circuit;
-		friend class Edge;
-
-		Node(const Node&);
-		Node& operator=(const Node&);
-
+		vector<EdgePointer> inputs;
+		vector<EdgePointer> outputs;
+        
+        
 		string getName() const;				// Returns the input or gate name
 		string getType() const;				// Returns the type of the gate
 

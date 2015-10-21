@@ -1,4 +1,6 @@
 #pragma once
+#include "Edge.h"
+#include "EdgePointer.h"
 
 #define FORWARD_CONNECTED	1
 #define BACKWARD_CONNECTED	-1
@@ -6,8 +8,8 @@
 
 namespace vp
 {
-	class EdgePointer;
-	class Edge;
+	//class EdgePointer;
+	//class Edge;
 	class Connection
 	{
 	public:

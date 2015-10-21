@@ -7,9 +7,11 @@
 #include <set>
 #include <regex>
 #include <queue>
-#include "Node.h"
 #include "Edge.h"
+#include "Node.h"
 #include "Connection.h"
+#include "EdgePointer.h"
+#include "ParseError.h"
 using namespace std;
 
 namespace vp
@@ -35,7 +37,7 @@ namespace vp
 		int emptyNodesCounter;
 	public:
 		friend class Node;
-		friend class Edge;
+		//friend class Edge;
 
 		Circuit();
 		Circuit(const string&);

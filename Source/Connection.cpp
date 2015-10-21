@@ -1,6 +1,4 @@
 #include "Connection.h"
-#include "EdgePointer.h"
-#include "Edge.h"
 #include <iostream>
 
 namespace vp
