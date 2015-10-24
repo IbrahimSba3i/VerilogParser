@@ -69,7 +69,7 @@ namespace vp
 
 		string osp = "[\\t\\n\\r ]*";
 		string sp = "[\\t\\n\\r ]+";
-		string delayPart = "((?:#\\(" + osp + "([0-9]+)" + osp + "," + osp + "([0-9]+)" + osp + "\\))?)";
+		string delayPart = "((?:#\\(" + osp + "([0-9.]+)" + osp + "," + osp + "([0-9.]+)" + osp + "\\))?)";
 		regex wirePattern("(input|output|inout|reg|wire)" + osp + "(\\[\\d+\\:\\d+\\])?" + sp + "(\\w+)");
 		regex gatePattern("([A-Za-z0-9]+)" + sp + delayPart + osp + "([_0-9a-zA-z]+)?" + osp + "\\(([^]+)\\)");
 		regex assignPatern("assign (.+) = 1'b(0|1);");
