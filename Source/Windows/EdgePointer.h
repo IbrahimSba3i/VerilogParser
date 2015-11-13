@@ -17,6 +17,7 @@ namespace vp
 		friend class Circuit;
 		typedef map<string, Edge>::iterator EdgeItr;
 		EdgePointer(EdgeItr);
+		EdgePointer();
 		const Edge& operator*() const;
 		const Edge* operator->() const;
 		EdgeItr it;

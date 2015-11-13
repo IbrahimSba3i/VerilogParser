@@ -7,6 +7,7 @@
 namespace vp
 {
 	EdgePointer::EdgePointer(EdgeItr i) : it(i) {}
+	EdgePointer::EdgePointer() {}
 	const Edge& EdgePointer::operator*() const { return it->second; }
 	const Edge* EdgePointer::operator->() const { return &it->second; }
 }

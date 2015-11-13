@@ -199,8 +199,10 @@ namespace vp
 		for (int i = 0; i < connections.size(); i++){
 			for (int j = 0; j < nodes[i].outputs.size(); j++){
 				for (int k = 0; k < nodes[i].outputs[j]->nDestinations(); k++){
-					connections[i][nodes[i].outputs[j]->getDestination(k)] = Connection(1, nodes[i].outputs[j]);
-					connections[nodes[i].outputs[j]->getDestination(k)][i] = Connection(-1, nodes[i].outputs[j]);
+					connections[i][nodes[i].outputs[j]->getDestination(k)].setEdge(nodes[i].outputs[j]);
+					connections[nodes[i].outputs[j]->getDestination(k)][i].setEdge(nodes[i].outputs[j]);
+					connections[i][nodes[i].outputs[j]->getDestination(k)].connectForward();
+					connections[nodes[i].outputs[j]->getDestination(k)][i].connectBackward();
 				}
 			}
 		}

@@ -1,12 +1,11 @@
 #pragma once
-
+#include "EdgePointer.h"
 #define FORWARD_CONNECTED	1
 #define BACKWARD_CONNECTED	-1
 #define NOT_CONNECTED		0
 
 namespace vp
 {
-	class EdgePointer;
 	class Edge;
 	class Connection
 	{
@@ -21,8 +20,13 @@ namespace vp
 		bool isConnected() const;
 		operator bool() const;
 		bool operator==(int) const;
+
+		void setEdge(EdgePointer it);
+		void connectForward();
+		void connectBackward();
 	private:
-		EdgePointer* it;
-		int value;
+		EdgePointer it;
+		bool connectedForward;
+		bool connectedBackward;
 	};
 }
